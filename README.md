@@ -1,4 +1,4 @@
-# EasyRecycler [![](https://jitpack.io/v/ahmadaghazadeh/CodeEditor.svg)](https://jitpack.io/#ahmadaghazadeh/CodeEditor)
+# EasyRecycler [![](https://jitpack.io/v/ahmadaghazadeh/easyRecycler.svg)](https://jitpack.io/#ahmadaghazadeh/easyRecycler)
 
 This is a data binding easy use recycler
 
