@@ -25,7 +25,7 @@ allprojects {
 ```groovy
 dependencies {
      
-    compile 'com.github.ahmadaghazadeh:EasyRecycler:1.0.1'
+    implementation 'com.github.ahmadaghazadeh:EasyRecycler:1.0.1'
 }
 ```
  
