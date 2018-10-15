@@ -1,29 +1,84 @@
 package com.github.ahmadaghazadeh.easyrecycler;
 
+import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 
+import com.github.ahmadaghazadeh.easyrecycler.helper.ItemTouchHelperAdapter;
+import com.github.ahmadaghazadeh.easyrecycler.helper.ItemTouchHelperCallback;
+import com.github.ahmadaghazadeh.easyrecycler.helper.ItemTouchHelperViewHolder;
+import com.github.ahmadaghazadeh.easyrecycler.helper.OnStartDragListener;
+import com.github.ahmadaghazadeh.easyrecycler.BR;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class EasyAdapter<T extends BaseRecyclerModel> extends RecyclerView.Adapter<EasyAdapter.ViewHolder> {
+public class EasyAdapter<T extends BaseRecyclerView> extends RecyclerView.Adapter<EasyAdapter.ViewHolder> implements ItemTouchHelperAdapter,OnStartDragListener {
 
+    private OnStartDragListener dragStartListener;
+
+    private AdapterMode adapterMode;
     private List<T> list;
     private EmptyViewModel.EmptyItemViewModelListener emptyItemViewModelListener;
 
     public EasyAdapter() {
         this.list = new LinkedList<>();
+        adapterMode = AdapterMode.None;
+    }
+
+    public EasyAdapter(AdapterMode adapterMode) {
+        this.list = new LinkedList<>();
+        this.adapterMode = adapterMode;
     }
 
     public EasyAdapter(List<T> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
 
+    @BindingAdapter( value = {"data","mode"},requireAll =false)
+    public static void setData(RecyclerView recycler, List<BaseRecyclerView> models,AdapterMode adapterMode) {
+
+        if (recycler.getAdapter() instanceof EasyAdapter) {
+            ((EasyAdapter) recycler.getAdapter()).insertList(models);
+        }else {
+            EasyAdapter<BaseRecyclerView> adapter1;
+            if(adapterMode!=null){
+                adapter1=new EasyAdapter<>(adapterMode);
+            }else{
+                adapter1=new EasyAdapter<>();
+            }
+             adapter1.insertList(models);
+             recycler.setAdapter(adapter1);
+        }
+
+
+    }
+
+    public void setDragStartListener(OnStartDragListener mDragStartListener) {
+        this.dragStartListener = mDragStartListener;
+    }
+
+    public List<T> getSelectedItem() {
+        List<T> lst = new LinkedList<>();
+        for (T t : list) {
+            if (t.isSelected())
+                lst.add(t);
+        }
+        return lst;
     }
 
     public void setEmptyItemViewModelListener(EmptyViewModel.EmptyItemViewModelListener emptyItemViewModelListener) {
@@ -72,15 +127,70 @@ public class EasyAdapter<T extends BaseRecyclerModel> extends RecyclerView.Adapt
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (list.size() != 0) {
             final T model = list.get(position);
-            holder.getBinding().setVariable(BR.viewModel, model);
+            holder.getBinding().setVariable(model.getBindingVariable(), model);
+            switch (adapterMode) {
+                case MultiChoose:
+                case OneChoose:
+                    model.setAdapterOnClick(() -> {
+                        if (adapterMode == AdapterMode.OneChoose) {
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).isSelected() && position!=i) {
+                                    list.get(i).setSelected(false);
+                                    notifyItemChanged(i);
+                                }
+                            }
+                        }
+                        notifyItemChanged(position);
+                    });
+                    break;
+
+                case DragDrop:
+                    model.setOnTouchListener((View v, MotionEvent event) -> {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                dragStartListener.onStartDrag(holder);
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                v.performClick();
+                                break;
+                            default:
+                                break;
+                        }
+                        return true;
+                    });
+                    break;
+            }
+
+
         } else {
             EmptyViewModel emptyViewModel = new EmptyViewModel(emptyItemViewModelListener);
             holder.getBinding().setVariable(BR.viewModel, emptyViewModel);
         }
+
         holder.getBinding().executePendingBindings();
     }
 
-    public static class ViewHolder<V extends ViewDataBinding> extends RecyclerView.ViewHolder {
+    @Override
+    public void onItemDismiss(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(list, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+    }
+
+    public static class ViewHolder<V extends ViewDataBinding> extends RecyclerView.ViewHolder implements
+            ItemTouchHelperViewHolder {
+        Drawable background;
         private V v;
 
         ViewHolder(V v) {
@@ -90,6 +200,21 @@ public class EasyAdapter<T extends BaseRecyclerModel> extends RecyclerView.Adapt
 
         public V getBinding() {
             return v;
+        }
+
+        @Override
+        public void onItemSelected() {
+            background = itemView.getBackground();
+            itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                itemView.setBackground(background);
+            } else {
+                itemView.setBackgroundDrawable(background);
+            }
         }
     }
 

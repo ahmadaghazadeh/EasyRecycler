@@ -3,20 +3,27 @@
     package="com.github.ahmadaghazadeh.sample">
 
     <application
-        android:name=".App"
         android:allowBackup="true"
+        android:name=".di.BaseApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.various.VariousActivity"/>
+        <activity android:name=".ui.drag.DragActivity"/>
+        <activity android:name=".ui.onechoose.OneChooseActivity"/>
+        <activity android:name=".ui.multichoose.MultiChooseActivity"/>
+
     </application>
 
 </manifest>

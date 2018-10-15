@@ -1,16 +1,26 @@
-package com.github.ahmadaghazadeh.sample;
+package com.github.ahmadaghazadeh.sample.di;
 
-import android.app.Application;
+import android.content.Context;
 
-public class App extends Application {
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 
+public class BaseApp extends DaggerApplication{
     private Thread.UncaughtExceptionHandler defaultHandler;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+    }
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+
         defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
+
+        AppComponent component = DaggerAppComponent.builder().getApp(this).build();
+        component.inject(this);
+        return component;
     }
 
     public void handleUncaughtException(Thread thread, Throwable e) {
