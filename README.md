@@ -4,11 +4,6 @@ This is a data binding easy use recycler
 
 Please note that this library is currently supported on android API 7 and above.
 
-EasyRecycler have None,OneChoose, DragDrop, MultiChoose mode;
-
-[![Watch the video](https://github.com/ahmadaghazadeh/EasyRecycler/media/screenshot.png)](https://github.com/ahmadaghazadeh/EasyRecycler/media/video.mp4)
-
-
 Integration with existing project
 ---
 
@@ -30,7 +25,7 @@ allprojects {
 ```groovy
 dependencies {
      
-    compile 'com.github.ahmadaghazadeh:EasyRecycler:1.0.1'
+    implementation 'com.github.ahmadaghazadeh:EasyRecycler:1.0.2'
 }
 ```
  
