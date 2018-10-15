@@ -6,7 +6,8 @@ Please note that this library is currently supported on android API 7 and above.
 
 EasyRecycler have  None,OneChoose, DragDrop, MultiChoose mode.
 
-[![Alt text for your video](media/screenshot.png)](media/video.mp4)
+
+[![Play Video](media/screenshot.png)](https://youtu.be/HREz61ww4hc)
 
 
 Integration with existing project
