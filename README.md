@@ -9,6 +9,9 @@ EasyRecycler have  None,OneChoose, DragDrop, MultiChoose mode.
 
 [![Play Video](media/screenshot.png)](https://youtu.be/HREz61ww4hc)
 
+<div align="center">
+  <a href="https://youtu.be/HREz61ww4hc"><img src="media/screenshot.png" alt="Play Video"></a>
+</div>
 
 Integration with existing project
 ---
