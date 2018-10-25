@@ -6,9 +6,9 @@ Please note that this library is currently supported on android API 7 and above.
 
 EasyRecycler have  None,OneChoose, DragDrop, MultiChoose mode.
 
-### [Click For Play Video](https://youtu.be/HREz61ww4hc)
+### [Click For Play Video](https://youtu.be/aBtAELgOws8)
 <div align="center">
-  <a href="https://youtu.be/HREz61ww4hc"><img src="media/screenshot.png" alt="Play Video"></a>
+  <a href="https://youtu.be/aBtAELgOws8"><img src="media/screenshot.png" alt="Play Video"></a>
 </div>
 
 Integration with existing project
